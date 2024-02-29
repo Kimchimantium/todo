@@ -1,3 +1,26 @@
-h1 {
-font-family: ;
+body {
+    font-family: "Orbit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background-color: #222222;
+    color: #fafafa;
+}
+a {
+    text-decoration: none;
+    color: #08A47C;
+}
+a:hover {
+color: #fafafa;
+}
+bg-todo {
+    background-color: #222222;
+}
+text-todo {
+    color: #fafafa;
+}
+text-todo-green {
+    color: #08A47C;
+}
+text-todo-green:hover {
+    color: #fafafa;
 }

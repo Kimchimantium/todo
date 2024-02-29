@@ -1,0 +1,42 @@
+{% include 'header.html' %}
+{% block content %}
+
+<h1>반가워 세상아</h1>
+
+<!--flash errors-->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="bg-danger text-light alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!--form section-->
+<div class="container bg-light">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.email.label }}<br>
+            {{ form.email() }}
+        </div>
+        <div class="form-group">
+            {{ form.username.label }}<br>
+            {{ form.username() }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }}<br>
+            {{ form.password() }}
+        </div>
+        <div class="form-group">
+            {{ form.password_2.label }}<br>
+            {{ form.password_2() }}
+        </div>
+        <div class="form-group">
+            {{ form.submit() }}
+        </div>
+    </form>
+</div>
+<a href="/">Home</a>
+{% endblock %}
+{% include 'footer.html' %}
