@@ -1,47 +1,131 @@
-{% include 'header.html' %}
+{% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h1>#투두</h1>
+    <h1>TODO <span><i class="fa-solid fa-list-check"></i></span></h1>
 </div>
-{% endblock %}
-{% include 'footer.html' %}
-
-
 <div class="container bg-todo">
-    <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-       aria-controls="collapseExample"><i class="fa-solid fa-plus"></i></a>
+    <div class="d-flex justify-content-center text-center mb-5">
+        <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+           aria-controls="collapseExample"><i class="fa-solid fa-plus" style="font-size: 100px"></i></a>
+    </div>
     <div class="collapse" id="collapseExample">
-        <div class="container card">
+        <div class="container">
             <form method="POST">
                 {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.task.label }}<br>
-                    {{ form.task() }}
-                </div>
-                <div class="form-group">
-                    {{ form.description.label }}<br>
-                    {{ form.description() }}
-                </div>
-                <div class="form-group">
-                    {{ form.importance.label }}<br>
-                    {{ form.importance() }}
-                </div>
-                <div class="form-group">
-                    {{ form.date.label }}<br>
-                    {{ form.date() }}
-                </div>
-                <div class="form-group">
-                    {{ form.time.label }}<br>
-                    {{ form.time() }}
-                </div>
-                <div class="form-group">
-                    {{ form.done.label }}<br>
-                    {{ form.done() }}
-                </div>
-                <div class="form-group">
-                    {{ form.submit() }}
+                <div class="form-group container">
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.task.label }}<br>
+                            {{ form.task() }}
+                        </div>
+                        <div class="col-6">
+                            {{ form.importance.label }}<br>
+                            {{ form.importance() }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form.description.label }}<br>
+                            {{ form.description() }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.date.label }}<br>
+                            {{ form.date() }}
+                        </div>
+                        <div class="col-6">
+                            {{ form.time.label }}<br>
+                            {{ form.time() }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form.done.label }}
+                            {{ form.done() }}
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            {{ form.submit() }}
+                            <div class="col-6">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+    {% for todo in todo_db %}
+    <div class="row mb-3">
+        <div class="col-5 text-center">
+            <a data-bs-toggle="collapse" href="#CollapseTask{{ todo.id }}" role="button"
+               aria-expanded="false" aria-controls="CollapseTask{{ todo.id }}" title="click to see detail">
+                <h2>#{{ todo.task }}</h2>
+            </a>
+            <div class="collapse" id="CollapseTask{{ todo.id }}">
+                <div class="card card-body">
+                    {{ todo.description }}
+                </div>
+            </div>
+        </div>
+        <div class="col-3 text-center">
+            <p id="timer{{ todo.id }}" class="timer" data-time="{{ todo.date }}T{{ todo.time }}"></p>
+        </div>
+        <div class="col-3 text-center">
+            <p>{% for _ in range(todo.importance) %}
+                <i class="fa-regular fa-star"></i>
+                {% endfor %}
+            </p>
+        </div>
+        <div class="col-1 text-center">
+            <a href='/?todo_id={{ todo.id }}&action=done&current_done={{ todo.done }}' class="btn btn-dark text-light">
+                {% if todo.done == 1 %}
+                <i class="fa-regular fa-square-check fa-lg"></i>
+                {% else %}
+                <i class="fa-regular fa-square fa-lg"></i>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    </table>
+    <div class="container bg-todo">
+        <a data-bs-toggle="collapse" href="#collapseTable" role="button" aria-expanded="false"
+           aria-controls="collapseTable"><i class="fa-solid fa-caret-up fa-rotate-180" id="toggleIcon"></i></a>
+        <div class="collapse" id="collapseTable">
+            <table class="table table-todo">
+                <thead>
+                <tr class="table-todo">
+                    {% for col in todo_cols %}
+                    {% if loop.index == 1 %}
+                    <th scope="col" style="display: none;">{{ col }}</th>
+                    {% else %}
+                    <th scope="col">{{ col }}</th>
+                    {% endif %}
+                    {% endfor %}
+                    <th scope="col">remove</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for todo in todo_db %}
+                <tr class="table-todo">
+                    <td class="table-todo">{{ todo.task }}</td>
+                    <td class="table-todo">{{ todo.description }}</td>
+                    <td class="table-todo">{{ todo.importance }}</td>
+                    <td class="table-todo">{{ todo.date }}</td>
+                    <td class="table-todo">{{ todo.time }}</td>
+                    <td class="table-todo">{{ todo.done }}</td>
+                    <td class="table-todo">
+                        <a href='/?todo_id={{ todo.id }}&action=delete' class="btn btn-dark text-light">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+<a href="{{ url_for('db_browser') }}">dbbrowser</a>
+{% endblock %}
