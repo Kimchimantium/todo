@@ -50,3 +50,20 @@ color: #08A47C;
 .card {
         --bs-card-bg: #222222;
 }
+.dark-modal .modal-content {
+    background-color: #343a40; /* Bootstrap 5 dark background */
+    color: #ffffff; /* Light text */
+}
+
+.dark-modal .modal-header,
+.dark-modal .modal-body,
+.dark-modal .modal-footer {
+    border-color: #474f55; /* Slightly lighter border color */
+}
+.btn-todo {
+    background-color: #08A47C;
+    color: #fafafa;
+}
+.btn-todo:hover {
+    border-color: #08A47C;
+}

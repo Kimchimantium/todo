@@ -1,61 +1,70 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h1>TODO <span><i class="fa-solid fa-list-check"></i></span></h1>
+    <h1 class="display-1">TODO <span></span></h1>
+    {% if current_user.is_authenticated %}
+    <p>Welcome {{ current_user.username }}</p>
+    {% endif %}
+    <!--flash errors-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="bg-danger text-light alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 <div class="container bg-todo">
     <div class="d-flex justify-content-center text-center mb-5">
         <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-           aria-controls="collapseExample"><i class="fa-solid fa-plus" style="font-size: 100px"></i></a>
+           aria-controls="collapseExample"><i class="fa-solid fa-plus rotate-icon" style="font-size: 100px"></i></a>
     </div>
     <div class="collapse" id="collapseExample">
-        <div class="container">
-            <form method="POST">
+        <div class="container mt-5">
+            <form method="POST" action="/add_todo">
                 {{ form.hidden_tag() }}
-                <div class="form-group container">
-                    <div class="row">
-                        <div class="col-6">
-                            {{ form.task.label }}<br>
-                            {{ form.task() }}
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.task.label(class_="form-label") }}
+                            {{ form.task(class_="form-control") }}
                         </div>
-                        <div class="col-6">
-                            {{ form.importance.label }}<br>
-                            {{ form.importance() }}
+                        <div class="col-md-6">
+                            {{ form.importance.label(class_="form-label") }}
+                            {{ form.importance(class_="form-control") }}
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12">
-                            {{ form.description.label }}<br>
-                            {{ form.description() }}
+                            {{ form.description.label(class_="form-label") }}
+                            {{ form.description(class_="form-control", rows=3) }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.date.label(class_="form-label") }}
+                            {{ form.date(class_="form-control") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.time.label(class_="form-label") }}
+                            {{ form.time(class_="form-control") }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex align-items-center">
+                            {{ form.done(class_="form-check-input me-2") }}
+                            {{ form.done.label(class_="form-check-label") }}
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            {{ form.date.label }}<br>
-                            {{ form.date() }}
-                        </div>
-                        <div class="col-6">
-                            {{ form.time.label }}<br>
-                            {{ form.time() }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            {{ form.done.label }}
-                            {{ form.done() }}
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-6">
+                        <div class="col-12 form-group btn btn-todo mt-3 mb-5">
                             {{ form.submit() }}
-                            <div class="col-6">
-                            </div>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
+
     </div>
     {% for todo in todo_db %}
     <div class="row mb-3">
@@ -90,10 +99,12 @@
         </div>
     </div>
     {% endfor %}
-    </table>
-    <div class="container bg-todo">
-        <a data-bs-toggle="collapse" href="#collapseTable" role="button" aria-expanded="false"
-           aria-controls="collapseTable"><i class="fa-solid fa-caret-up fa-rotate-180" id="toggleIcon"></i></a>
+    <div class="container bg-todo mt-3 mb-3">
+        <div class="container text-center">
+            <a data-bs-toggle="collapse" href="#collapseTable" role="button" aria-expanded="false"
+               aria-controls="collapseTable"><i class="fa-solid fa-caret-up fa-rotate-180 " style="font-size: 100px"
+                                                id="toggleIcon"></i></a>
+        </div>
         <div class="collapse" id="collapseTable">
             <table class="table table-todo">
                 <thead>
@@ -101,11 +112,13 @@
                     {% for col in todo_cols %}
                     {% if loop.index == 1 %}
                     <th scope="col" style="display: none;">{{ col }}</th>
+                    {% elif col == 'user_id' %}
+                    <th scope="col" style="display: none;">{{ col }}</th>
                     {% else %}
                     <th scope="col">{{ col }}</th>
                     {% endif %}
                     {% endfor %}
-                    <th scope="col">remove</th>
+                    <th scope="col">delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -116,9 +129,13 @@
                     <td class="table-todo">{{ todo.importance }}</td>
                     <td class="table-todo">{{ todo.date }}</td>
                     <td class="table-todo">{{ todo.time }}</td>
-                    <td class="table-todo">{{ todo.done }}</td>
-                    <td class="table-todo">
-                        <a href='/?todo_id={{ todo.id }}&action=delete' class="btn btn-dark text-light">Delete</a>
+                    {% if todo.done %}
+                    <td class="table-todo text-center"><i class="fa-regular fa-square-check fa-lg"></i></td>
+                    {% else %}
+                    <td class="table-todo text-center"><i class="fa-regular fa-square fa-lg"></i></td>
+                    {% endif %}
+                    <td class="table-todo text-center">
+                        <a href='/?todo_id={{ todo.id }}&action=delete'><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -127,5 +144,11 @@
         </div>
     </div>
 </div>
-<a href="{{ url_for('db_browser') }}">dbbrowser</a>
+{% if not current_user.is_authenticated %}
+<a href="{{ url_for('login') }}">Login</a>
+<a href="{{ url_for('register') }}">Register</a>
+{% else %}
+<a href="{{ url_for('logout') }}">Logout</a>
+{% endif %}
+<a href="{{ url_for('admin') }}">admin</a>
 {% endblock %}

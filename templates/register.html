@@ -1,4 +1,4 @@
-{% include 'header.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 <h1>반가워 세상아</h1>
@@ -14,7 +14,7 @@
 
 <!--form section-->
 <div class="container bg-todo">
-    <form method="POST">
+    <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.email.label }}<br>
@@ -37,6 +37,6 @@
         </div>
     </form>
 </div>
-<a href="/">Home</a>
+<a href="{{ url_for('register') }}">Register</a>
+<a href="{{ url_for('login') }}">Login</a>
 {% endblock %}
-{% include 'footer.html' %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-1">
+            <a href="/"><i class="fa-solid fa-arrow-right fa-rotate-180 fa-2xl"></i></a>
+        </div>
+        <div class="col-11">
+            <table class="table table-dark">
+                <thead>
+                <tr>
+                    {% for col in todo_cols %}
+                    <th scope="col">{{ col }}</th>
+                    {% endfor %}
+                    <th scope="col">edit</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for todo in todo_db %}
+                <tr>
+                    {% for col in todo_cols %}
+                    <td>{{ todo[col] }}</td>
+                    {% endfor %}
+                    <td>
+                        <form action='{{ url_for("delete_todo", todo_id=todo.id) }}' method="POST">
+                            <button style="background:none; border:none; color:inherit; cursor:pointer;" type="submit">
+                                <i
+                                        class="fa-solid fa-x"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-11">
+    <table class="table table-dark">
+        <thead>
+        <tr>
+            {% for col in user_cols %}
+            <th scope="col">{{ col }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in user_db %}
+        <tr>
+            {% for col in user_cols %}
+            {% if col == 'password' %}
+            <td>******</td>
+            {% else %}
+            <td>{{ user[col] }}</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -15,16 +15,23 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 $(document).ready(function() {
-    $('form').submit(function(e) {
+    $('form[action="/add_todo"]').submit(function(e) {
         var formData = $(this).serialize(); // Serialize form data
 
         $.ajax({
             type: "POST",
-            url: $(this).attr('action'), // or directly to your route, e.g., '/your-route'
+            url: $(this).attr('action'), // or directly to your route, e.g., '/add_todo'
             data: formData,
             success: function(response) {
-                // Reset the form here
-                $('form')[0].reset();
+                // Reset the form here if needed
+                $('form[action="add_todo"]')[0].reset();
+
+                // Reload the page to reflect the changes
+                window.location.reload(true);
+            },
+            error: function(xhr, status, error) {
+                // Optionally, handle errors
+                // You might want to alert the user or log the error
             }
         });
     });
@@ -56,35 +63,82 @@ document.addEventListener('DOMContentLoaded', function() {
 
     timers.forEach(function(timer) {
         var countDownDate = new Date(timer.getAttribute('data-time')).getTime();
-
         var x = setInterval(function() {
             var now = new Date().getTime();
             var distance = countDownDate - now;
 
-            // Calculate time left
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-            // Change timer color based on time left
             if (distance < 0) {
                 clearInterval(x);
                 timer.innerHTML = "OUTDATED";
-                timer.style.color = "grey"; // Choose a color for outdated timers
+                timer.style.color = "grey"; // Set to grey if the event is outdated
             } else {
-                timer.innerHTML = days + "d " + hours + "h " + minutes + "m ";
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Applying color based on the remaining time
+                timer.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+                // Remove any previously set color if more than one day is left
                 if (days > 0) {
-                    timer.style.color = "green"; // If it's more than a day left
+                    timer.style.color = ""; // Don't apply any color if more than a day is left
                 } else if (hours < 1) {
                     timer.style.color = "red"; // Less than 1 hour
                 } else if (hours < 3) {
                     timer.style.color = "orange"; // Less than 3 hours
+                } else if (24 > hours <= 3) {
+                    timer.style.color = "green"; // Less than 3 hours
                 } else {
-                    timer.style.color = "green"; // 3 hours or more but less than a day
+                    timer.style.color = "grey"; // Apply grey for 3 hours or more but less than a day
                 }
             }
         }, 1000);
+    });
+});
+
+//index.html fa-plus anime when collapsed expanded
+$(document).ready(function() {
+    // Listen for when the collapse element begins to be shown
+    $('#collapseExample').on('show.bs.collapse', function () {
+        anime({
+            targets: 'a[href="#collapseExample"] .fa-plus', // Target the icon within the anchor
+            rotate: 45, // Rotate to 45 degrees
+            duration: 300, // Duration of the animation
+            easing: 'easeInOutSine' // Easing function for a smooth effect
+        });
+    });
+
+    // Listen for when the collapse element begins to be hidden
+    $('#collapseExample').on('hide.bs.collapse', function () {
+        anime({
+            targets: 'a[href="#collapseExample"] .fa-plus', // Target the icon within the anchor
+            rotate: 0, // Rotate back to 0 degrees
+            duration: 300, // Duration of the animation
+            easing: 'easeInOutSine' // Easing function for a smooth effect
+        });
+    });
+});
+
+//index.html fa-caret anime when collapsed expanded
+//index.html fa-plus anime when collapsed expanded
+$(document).ready(function() {
+    // Listen for when the collapse element begins to be shown
+    $('#collapseTable').on('show.bs.collapse', function () {
+        anime({
+            targets: 'a[href="#collapseTable"] .fa-caret-up', // Target the icon within the anchor
+            rotate: 0, // Rotate to 180 degrees
+            duration: 300, // Duration of the animation
+            easing: 'easeInOutSine' // Easing function for a smooth effect
+        });
+    });
+
+    // Listen for when the collapse element begins to be hidden
+    $('#collapseTable').on('hide.bs.collapse', function () {
+        anime({
+            targets: 'a[href="#collapseTable"] .fa-caret-up', // Target the icon within the anchor
+            rotate: 180, // Rotate back to 0 degrees
+            duration: 300, // Duration of the animation
+            easing: 'easeInOutSine' // Easing function for a smooth effect
+        });
     });
 });
