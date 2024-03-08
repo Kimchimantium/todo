@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, url_for, request, jsonify, redirect
 from flask_bootstrap import Bootstrap
-from sqlalchemy import desc, asc
+from forms import RegisterForm, TodoForm, LoginForm
 from flask_ckeditor import CKEditor
 from flask_migrate import Migrate
 from flask_login import (UserMixin, login_user, current_user,
@@ -8,10 +8,7 @@ from flask_login import (UserMixin, login_user, current_user,
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 from dotenv import load_dotenv
-import json
-from datetime import date, datetime, time
 from sqldb import Todo, TodoUser, db
-from forms import RegisterForm, TodoForm, LoginForm
 
 # TODO
 # index.html: make db edit form as modal ✓
@@ -133,7 +130,7 @@ def load_user(user_id):
     return TodoUser.query.get(user_id)
 
 
-@app.route('/add_todo', methods=["POST"])
+@app.route('/add_todo', methods=["POST", 'GET'])
 @login_required
 def add_todo():
     form = TodoForm()
@@ -151,7 +148,7 @@ def add_todo():
         db.session.add(new_todo)
         db.session.commit()
         print(f"added to db {form.task.data}")
-        return redirect('/')
+        return redirect(url_for('home'))
     return render_template('index.html',
                            form=form)
 

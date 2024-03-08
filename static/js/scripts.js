@@ -14,29 +14,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-$(document).ready(function() {
-    $('form[action="/add_todo"]').submit(function(e) {
-        var formData = $(this).serialize(); // Serialize form data
-
-        $.ajax({
-            type: "POST",
-            url: $(this).attr('action'), // or directly to your route, e.g., '/add_todo'
-            data: formData,
-            success: function(response) {
-                // Reset the form here if needed
-                $('form[action="add_todo"]')[0].reset();
-
-                // Reload the page to reflect the changes
-                window.location.reload(true);
-            },
-            error: function(xhr, status, error) {
-                // Optionally, handle errors
-                // You might want to alert the user or log the error
-            }
-        });
-    });
-});
-
 document.addEventListener('DOMContentLoaded', function() {
     var countDownDate = new Date("{{ todo.date }}T{{ todo.time }}").getTime();
 
